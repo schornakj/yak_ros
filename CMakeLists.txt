@@ -10,7 +10,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(yak REQUIRED)
-
 find_package(std_srvs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
@@ -79,19 +78,22 @@ else()
         src/yak_ros2_node.cpp)
 
     target_include_directories(${PROJECT_NAME}_node PUBLIC
-      ${rclcpp_INCLUDE_DIRS}
-      ${yak_INCLUDE_DIRS}
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+        "$<INSTALL_INTERFACE:include>"
+        ${rclcpp_INCLUDE_DIRS}
     )
 
     target_link_libraries(${PROJECT_NAME}_node
         ${rclcpp_LIBRARIES}
         ${OpenCV_LIBS}
-        ${yak_LIBRARIES}
         ${sensor_msgs_LIBRARIES}
         ${tf2_LIBRARIES}
         ${tf2_ros_LIBRARIES}
         ${tf2_eigen_LIBRARIES}
         ${cv_bridge_LIBRARIES}
+        yak::yak
+        yak::yak_frontend
+        yak::yak_marching_cubes
     )
 
     ament_target_dependencies(${PROJECT_NAME}_node
