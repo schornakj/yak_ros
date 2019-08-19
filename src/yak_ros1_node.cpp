@@ -46,7 +46,9 @@ public:
     generate_mesh_service_ = nh.advertiseService("generate_mesh_service", &OnlineFusionServer::onGenerateMesh, this);
 
     // Advertise service for clearing the contents of the voxel volume
-    reset_volume_service_ = nh.advertiseService("reset_volume_service", &OnlineFusionServer::onResetVolume, this);
+    clear_volume_service_ = nh.advertiseService("clear_volume_service", &OnlineFusionServer::onClearVolume, this);
+
+    reset_volume_params_service_ = nh.advertiseService("reset_volume_params_Service", &OnlineFusionServer::onResetVolumeParams, this);
 
   }
 
@@ -111,10 +113,17 @@ private:
     return true;
   }
 
-  bool onResetVolume(std_srvs::TriggerRequest &req, std_srvs::TriggerResponse &res)
+  bool onClearVolume(std_srvs::TriggerRequest &req, std_srvs::TriggerResponse &res)
   {
-    ROS_INFO_STREAM("Reseting volume");
+    ROS_INFO_STREAM("Clearing volume");
     res.success = fusion_.reset();;
+    return true;
+  }
+
+  bool onResetVolumeParams(std_srvs::TriggerRequest &req, std_srvs::TriggerResponse &res)
+  {
+    ROS_INFO_STREAM("Reseting volume with new(ish) params");
+    res.success = fusion_.resetWithNewParams(params_);
     return true;
   }
 
@@ -123,7 +132,8 @@ private:
   tf2_ros::Buffer tf_buffer_;
   tf2_ros::TransformListener robot_tform_listener_;
   ros::ServiceServer generate_mesh_service_;
-  ros::ServiceServer reset_volume_service_;
+  ros::ServiceServer clear_volume_service_;
+  ros::ServiceServer reset_volume_params_service_;
   yak::FusionServer fusion_;
   const kfusion::KinFuParams params_;
   Eigen::Affine3d world_to_camera_prev_;

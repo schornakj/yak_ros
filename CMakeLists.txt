@@ -54,7 +54,7 @@ if ($ENV{ROS_VERSION} VERSION_EQUAL "1")
      add_executable(${PROJECT_NAME}_node
          src/yak_ros1_node.cpp)
      target_link_libraries(${PROJECT_NAME}_node
-         ${CATKIN_LIBRARIES}
+         ${catkin_LIBRARIES}
          ${OpenCV_LIBS}
          ${yak_LIBRARIES}
          ${sensor_msgs_LIBRARIES}
