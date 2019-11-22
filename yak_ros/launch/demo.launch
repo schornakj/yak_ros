@@ -12,7 +12,7 @@
   </node>
 
 
-  <node name="tsdf_node" pkg="yak_ros" type="yak_ros_node">
+  <node name="tsdf_node" pkg="yak_ros" type="yak_ros_ocl_node" output="screen">
     <remap from="~input_depth_image" to="/image"/>
 
     <param name="tsdf_frame" value="tsdf_origin"/>

@@ -10,6 +10,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(yak REQUIRED)
+find_package(yak_opencl REQUIRED)
 
 find_package(std_srvs REQUIRED)
 find_package(sensor_msgs REQUIRED)
@@ -66,13 +67,34 @@ if ($ENV{ROS_VERSION} VERSION_EQUAL "1")
          ${cv_bridge_LIBRARIES}
          yak::yak
          yak::yak_frontend
-         yak::yak_marching_cubes)
+         yak::yak_marching_cubes
+         yak_opencl::yak_opencl_frontend)
      target_include_directories(${PROJECT_NAME}_node PUBLIC
          "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
          "$<INSTALL_INTERFACE:include>")
      target_include_directories(${PROJECT_NAME}_node PUBLIC
        ${catkin_INCLUDE_DIRS}
        ${gl_depth_sim_INCLUDE_DIRS})
+
+     add_executable(${PROJECT_NAME}_ocl_node
+         src/fusion_server_ocl_ros1.cpp)
+     target_link_libraries(${PROJECT_NAME}_ocl_node
+         ${CATKIN_LIBRARIES}
+         ${OpenCV_LIBS}
+         ${sensor_msgs_LIBRARIES}
+         ${tf2_LIBRARIES}
+         ${tf2_ros_LIBRARIES}
+         ${tf2_eigen_LIBRARIES}
+         ${cv_bridge_LIBRARIES}
+         yak::yak
+         yak::yak_frontend
+         yak::yak_marching_cubes
+         yak_opencl::yak_opencl_frontend)
+     target_include_directories(${PROJECT_NAME}_ocl_node PUBLIC
+         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+         "$<INSTALL_INTERFACE:include>")
+     target_include_directories(${PROJECT_NAME}_ocl_node PUBLIC
+       ${catkin_INCLUDE_DIRS})
 
 
 
